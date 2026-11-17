@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  data-factory:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-training-data-factory
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - LOG_LEVEL=INFO
+      - NUM_WORKERS=4
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    networks:
+      - data-factory-net
+
+  # Optional: PostgreSQL for metadata storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: data-factory-db
+    environment:
+      POSTGRES_USER: datafactory
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: datasets
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - data-factory-net
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: data-factory-cache
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - data-factory-net
+
+networks:
+  data-factory-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

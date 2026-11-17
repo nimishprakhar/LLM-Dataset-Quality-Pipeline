@@ -1,0 +1,89 @@
+# Default pipeline configuration
+# Copy to config.yaml and customize
+
+# Crawler settings
+crawler:
+  user_agent: "AITrainingDataFactory/1.0"
+  concurrent_requests: 16
+  download_delay: 0.5
+  respect_robots_txt: true
+  max_depth: 3
+  request_timeout: 30
+
+# Content extraction
+extraction:
+  remove_scripts: true
+  remove_styles: true
+  remove_navigation: true
+  remove_ads: true
+  remove_footers: true
+  extract_tables: true
+  extract_code_blocks: true
+  min_text_length: 100
+
+# Data cleaning
+cleaning:
+  normalize_unicode: true
+  normalize_whitespace: true
+  remove_html_tags: true
+  detect_language: true
+  min_language_confidence: 0.8
+  target_languages:
+    - en
+
+# Deduplication
+deduplication:
+  use_exact_dedup: true
+  hash_algorithm: sha256
+  use_minhash: true
+  minhash_num_perm: 128
+  minhash_threshold: 0.8
+  use_semantic_dedup: true
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  semantic_threshold: 0.95
+  batch_size: 32
+
+# Quality filtering
+quality:
+  min_quality_score: 0.5
+  check_readability: true
+  check_grammar: true
+  check_toxicity: true
+  check_pii: true
+  max_toxicity_score: 0.3
+  min_readability_score: 30.0
+  min_word_count: 50
+  max_word_count: 100000
+
+# Metadata enrichment
+enrichment:
+  extract_language: true
+  extract_domain: true
+  extract_topics: true
+  calculate_quality_score: true
+  calculate_readability: true
+  topic_model: zero-shot
+
+# Semantic search
+search:
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  index_type: IVF
+  nlist: 100
+  nprobe: 10
+  dimension: 384
+
+# Export settings
+export:
+  output_dir: ./output
+  formats:
+    - jsonl
+    - parquet
+  compression: gzip
+  chunk_size: 10000
+  push_to_hub: false
+  hub_repo_id: null
+
+# General settings
+data_dir: ./data
+log_level: INFO
+num_workers: 4

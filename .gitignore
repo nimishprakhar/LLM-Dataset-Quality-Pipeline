@@ -1,0 +1,5 @@
+venv_factory/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
